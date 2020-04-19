@@ -1,12 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Button } from "./styles";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
-import { updateCounter, resetCounter } from "../../store/home/actions";
+import {
+  updateCounter,
+  resetCounter,
+  getUsersRequest,
+} from "../../store/home/actions";
 
-export default function Home() {
+export default function HomeComponent() {
   const dispatch = useDispatch();
   const counter = useSelector((state: ApplicationState) => state.home.value);
+  const users = useSelector((state: ApplicationState) => state.home.users);
+
+  useEffect(() => {
+    dispatch(getUsersRequest());
+  }, [dispatch]);
 
   return (
     <Container>
@@ -20,6 +29,14 @@ export default function Home() {
       <Button type="button" onClick={() => dispatch(resetCounter())}>
         RESET
       </Button>
+      <Button type="button" onClick={() => dispatch(getUsersRequest())}>
+        GET
+      </Button>
+      <ul>
+        {users.map((user) => (
+          <li>{user.username}</li>
+        ))}
+      </ul>
     </Container>
   );
 }
