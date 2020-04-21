@@ -34,7 +34,7 @@ export default function HomeComponent() {
       </Button>
       <ul>
         {users.map((user) => (
-          <li>{user.username}</li>
+          <li key={user.id}>{user.username}</li>
         ))}
       </ul>
     </Container>

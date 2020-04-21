@@ -4,7 +4,20 @@ import { ApplicationState, reducers, sagas } from ".";
 import createSagaMiddleware from "redux-saga";
 import reactotron from "../configs/reactotron";
 
-export default function configureStore(): Store<ApplicationState> {
+function configureStore(): Store<ApplicationState> {
+  const composeEnhancers = composeWithDevTools({});
+  const sagaMiddleware = createSagaMiddleware();
+
+  const store = createStore<ApplicationState, any, any, any>(
+    reducers,
+    composeEnhancers(applyMiddleware(sagaMiddleware))
+ );
+ 
+  sagaMiddleware.run(sagas);
+  return store;
+}
+
+function configureStoreDev(): Store<ApplicationState> {
   const sagaMonitor = reactotron.createSagaMonitor!();
   const actionsMonitor = reactotron.createEnhancer!();
   const composeEnhancers = composeWithDevTools({});
@@ -16,9 +29,12 @@ export default function configureStore(): Store<ApplicationState> {
   const store = createStore<ApplicationState, any, any, any>(
     reducers,
     composeEnhancers(applyMiddleware(sagaMiddleware), actionsMonitor)
-  );
+ );
 
   sagaMiddleware.run(sagas);
 
   return store;
 }
+
+
+export default process.env.NODE_ENV === 'development' ? configureStoreDev : configureStore

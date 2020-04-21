@@ -18,6 +18,6 @@ export const reducers: Reducer<ApplicationState> = combineReducers<
   home: homeReducer,
 });
 
-export const sagas: Saga = function* () {
+export const sagas: Saga<any> = function* () {
   return yield all([HomeSagas]);
 };
